@@ -1,0 +1,147 @@
+Html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Puentes para la Inclusión - UGEL 09</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600;800&family=Montserrat:wght@900&display=swap" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: #000; color: #fff; overflow-x: hidden; }
+
+        #fondos-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
+        
+        /* Estilo universal para fondos (Imágenes y Video) */
+        .fondo-img {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover; background-position: center;
+            object-fit: cover; /* Para el video */
+            opacity: 0; transition: opacity 1.2s ease-in-out;
+        }
+        .fondo-img.activa { opacity: 1; }
+
+        #vignette {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: radial-gradient(circle, rgba(0,0,0,0) 30%, rgba(0,0,0,0.85) 100%), 
+                        linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.7) 100%);
+            z-index: 2;
+        }
+
+        #contenido-scroll { position: relative; z-index: 3; }
+        .seccion-texto {
+            min-height: 110vh;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 25px;
+        }
+
+        .tarjeta-cristal {
+            background: rgba(15, 15, 15, 0.7);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 28px; padding: 35px 25px; width: 100%; max-width: 420px; text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+            opacity: 0; transform: translateY(50px);
+            transition: all 0.9s cubic-bezier(0.17, 0.55, 0.55, 1);
+        }
+        .seccion-texto.visible .tarjeta-cristal { opacity: 1; transform: translateY(0); }
+
+        .tag { color: #ff4d4d; font-size: 11px; font-weight: 800; letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: 18px; display: block; }
+        h2 { font-family: 'Montserrat', sans-serif; font-size: 26px; font-weight: 900; line-height: 1.1; margin-bottom: 15px; color: #ffffff; text-transform: uppercase; }
+        p { font-size: 15px; line-height: 1.7; color: #e5e7eb; font-weight: 300; }
+        .frase-destacada { font-style: italic; color: #fff; font-weight: 600; display: block; margin-bottom: 12px; font-size: 17px; }
+
+        #indicador-scroll {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 10;
+            color: white; font-size: 10px; text-transform: uppercase; letter-spacing: 3px;
+            display: flex; flex-direction: column; align-items: center; opacity: 0.8;
+            animation: bounce 2s infinite;
+        }
+        #indicador-scroll span { font-size: 20px; margin-top: 5px; }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0) translateX(-50%);} 40% {transform: translateY(-10px) translateX(-50%);} }
+        .espaciador-final { height: 40vh; }
+    </style>
+</head>
+<body>
+
+    <div id="fondos-container"></div>
+    <div id="vignette"></div>
+
+    <div id="indicador-scroll">Desliza<span>↓</span></div>
+
+    <div id="contenido-scroll"></div>
+    <div class="espaciador-final"></div>
+
+    <script>
+        const historiaData = [
+            { tipo: "img", src: "foto1.jpg", tag: "PROYECTO DE BUENAS PRÁCTICAS EN GESTIÓN EDUCATIVA DE LA UGEL 09 HUAURA", titulo: "Puentes para la Inclusión, Emprendimiento e Insersión Laboral", desc: "<span class='frase-destacada'>\"Puentes que convierten oportunidades en realidades laborales.\"</span>Bienvenidos a nuestra ruta formativa. Desliza para descubrir cómo transformamos vidas paso a paso." },
+            { tipo: "img", src: "foto2.jpg", tag: "CIMIENTOS", titulo: "Educación Básica Mi oportunidad Técnica", desc: "Todo inicia en EBR, EBA y EBE. Identificamos el talento y preparamos el terreno para una trayectoria conectada, sostenible y segura desde el primer día." },
+            { tipo: "img", src: "foto3.jpg", tag: "ESTRATEGIA EL PUENTES", titulo: "CETPRO: Formación Inclusiva", desc: "Brindamos capacitación técnica inclusiva de calidad. El CETPRO desarrolla competencias técnicas diseñadas para el éxito en el mundo productivo." },
+            { tipo: "img", src: "foto4.jpg", tag: "ESTRATEGIA EL PUENTES", titulo: "CETPRO: Formación para personas vulnerables", desc: "Brindamos capacitación técnica de calidad. El CETPRO desarrolla competencias técnicas diseñadas para el éxito en el mundo productivo en diferentes programas de formación." },
+            
+            // ELEMENTO 5: VIDEO 
+            { tipo: "img", src: "foto5.jpg", tag: "CONTINUIDAD y ACOMPAÑAMIENTO", titulo: "Trayectoria Acompañada", desc: "Nuestro compromiso es el acompañamiento. Capacitamos a personal docente y directivo en inclusión educativa." },
+            { tipo: "video", src: "video6.mp4", tag: "ORIENTACIÓN PARA INCLUSIÓN", titulo: "Trayectoria Acompañana a estudiantes con discapacidad por OMAPED", desc: "Nuestro compromiso es el acompañamiento. Orientación a las personas con discapacidad y vulnerables sobre sus derechos y beneficios." },
+            { tipo: "video", src: "video7.mp4", tag: "TRANSICIÓN AL TRABAJO", titulo: "Bolsa de Trabajo y Ferias Laboralaes en CETPRO con la Empresa Privada Redondos", desc: "Facilitamos la conexión con el mundo laboral por emprendimientos o bolsa de trabajo. Ofrecemos acceso directo a ofertas reales para que el tránsito del aula al empleo sea una realidad." },
+            { tipo: "img", src: "foto8.jpg", tag: "TRANSICIÓN AL TRABAJO", titulo: "Bolsa de Trabajo y Ferias Laboralaes CEBA", desc: "Facilitamos la conexión con el mundo laboral por emprendimientos o bolsa de trabajo. Ofrecemos acceso directo a ofertas reales para que el tránsito del aula al empleo sea una realidad." },
+            { tipo: "img", src: "foto9.jpg", tag: "TRANSICIÓN AL TRABAJO", titulo: "Bolsa de Trabajo y Ferias Laboralaes CETPRO", desc: "Facilitamos la conexión con el mundo laboral por emprendimientos o bolsa de trabajo. Ofrecemos acceso directo a ofertas reales para que el tránsito del aula al empleo sea una realidad." },
+            { tipo: "img", src: "foto10.jpg", tag: "RESPALDO PROFESIONAL", titulo: "Titulación y Certificación Oficial", desc: "Validamos el saber hacer. El reconocimiento formal de las competencias técnicas es la llave maestra para mejorar la empleabilidad de nuestros egresados." },
+            { tipo: "img", src: "foto11.jpg", tag: "UN MISMO PROPÓSITO", titulo: "Alianza con Actores", desc: "Nuestra fuerza es la unión: Colaboramos con DRTPE, OMAPED, DIRESA y la Comisión Técnica de UGEL 09 para un acompañamiento integral y humano." },
+            { tipo: "img", src: "foto12.jpg", tag: "PRODUCCIÓN INNOVADORA", titulo: "Bienes y Servicios", desc: "Nuestros proyectos productivos y de servicios, demuestran que la formación técnica genera valor, salud y bienestar en nuestra comunidad." },
+            { tipo: "img", src: "foto13.jpg", tag: "LOGRO ALCANZADO", titulo: "Historias de Éxito", desc: "Hoy celebramos resultados tangibles. Gracias por recorrer nuestra ruta formativa. ¡Acércate y conoce a los verdaderos protagonistas de este cambio!" },
+            { tipo: "video", src: "video13.mp4", tag: "Testimonio", titulo: "Testimonio de una estudiante de CETPRO", desc: "Gracias por la visita y acompañarnos en este viaje." },
+     
+        ];
+
+        const containerFondos = document.getElementById('fondos-container');
+        const containerScroll = document.getElementById('contenido-scroll');
+
+        historiaData.forEach((item, i) => {
+            let el;
+            if (item.tipo === "video") {
+                el = document.createElement('video');
+                el.src = item.src;
+                el.muted = true; el.loop = true; el.playsInline = true;
+                el.className = 'fondo-img';
+            } else {
+                el = document.createElement('div');
+                el.className = 'fondo-img';
+                el.style.backgroundImage = `url('${item.src}')`;
+            }
+            el.id = `fondo-${i}`;
+            if(i === 0) el.classList.add('activa');
+            containerFondos.appendChild(el);
+
+            const s = document.createElement('div');
+            s.className = 'seccion-texto';
+            s.dataset.index = i;
+            s.innerHTML = `<div class="tarjeta-cristal"><span class="tag">${item.tag}</span><h2>${item.titulo}</h2><p>${item.desc}</p></div>`;
+            containerScroll.appendChild(s);
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const idx = entry.target.dataset.index;
+                    entry.target.classList.add('visible');
+                    document.querySelectorAll('.fondo-img').forEach((f, i) => {
+                        if(i == idx) {
+                            f.classList.add('activa');
+                            if(f.tagName === "VIDEO") f.play();
+                        } else {
+                            f.classList.remove('activa');
+                            if(f.tagName === "VIDEO") f.pause();
+                        }
+                    });
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.seccion-texto').forEach(sec => observer.observe(sec));
+
+        window.addEventListener('scroll', () => {
+            document.getElementById('indicador-scroll').style.opacity = (window.scrollY > 50) ? '0' : '0.8';
+        });
+    </script>
+</body>
+</html>
